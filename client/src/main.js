@@ -1,7 +1,9 @@
 import './styles/globals.css';
-import { traerProductos, agregarProducto as agregarProductoAPI } from './services/products.service.js';
-import { Alert } from 'bootstrap';
-import { alertaExitosa } from './utils/alert.js';
+import { obtenerProducto, obtenerProductoId, crearProducto, actualizarProducto, actualizarParcialProducto, eliminarProducto } from './services/products.service.js';
+import { alertaExitosa, alertaConfirmacion, alertError } from './utils/alert.js';
+import { actualizarEstadisticas } from './utils/estadisticas.js';
+import { imprimirProductos } from './utils/imprimirProductos.js';
+
 
 document.addEventListener("DOMContentLoaded", async () => {
     const datos = await traerProductos();
@@ -27,77 +29,109 @@ let editandoId = null // Variable para almacenar el ID del producto que se está
 formulario.addEventListener("submit", async (event) => { // Al enviar el formulario, prevenir la acción por defecto (recargar la página)
     event.preventDefault()
 
-    try { 
-    const nuevoProducto = { // Crear un nuevo producto con los datos del formulario
-        nombre: nombreProducto.value.toLowerCase().trim(),
-        precio: Number(precioProducto.value),
-        unidad: Number(unidadProducto.value),
-        descripcion: descripcionProducto.value.toLowerCase().trim() ? descripcionProducto.value.toLowerCase().trim() : "Sin descripcion"
-    }
-
-    if (editandoId) {
-        guardarCambiosProducto(editandoId, nuevoProducto)
-    } else {
-        agregarProductoAPI(nuevoProducto)
-    }
-
-    formulario.addEventListener("reset", () => {
-        editandoId = null
-        formTitle.textContent = "Detalles del producto"
-        submitBtn.textContent = "Guardar Productos"
-    })
-    
-    tableBody.addEventListener("click", async (e) => {
-
-        if (e.target.closest("btn-eliminar")) {
-            const id = e.target.closest("btn-eliminar").database.json
+    try {
+        const nuevoProducto = { // Crear un nuevo producto con los datos del formulario
+            nombre: nombreProducto.value.toLowerCase().trim(),
+            precio: Number(precioProducto.value),
+            unidad: Number(unidadProducto.value),
+            descripcion: descripcionProducto.value.toLowerCase().trim() ? descripcionProducto.value.toLowerCase().trim() : "Sin descripcion"
         }
-    })
 
-    // GET
-    async function traerProductos() {
-        try {
-            const producto = await obtenerProductos()
-            imprimirProductos(producto)
-            actualizarEstadisticas(producto)
-        } catch (error) {
-            console.error("Error al traer datos:", error)
-            alert("Error: No se pudieron cargar los productos")
+        if (editandoId) { 
+            guardarCambiosProducto(editandoId, nuevoProducto)
+        } else {
+            agregarProductoAPI(nuevoProducto)
         }
-        
-    }
 
-    // POST
-    async function agregarProductoAPI(producto) {
-        try {
-            await crearProducto(producto)
-            traerProductos() // Traer la lista actualizada de productos después de agregar el nuevo producto
-            alertaExitosa("Producto agregado exitosamente") // Mostrar una alerta de éxito al usuario después de agregar el producto
-            formulario.reset() // Limpiar el formulario después de agregar el producto
-        } catch (error) {
-            console.error("Error al agregar producto:", error)
-            alert("Error: No se pudo agregar el producto")
+        formulario.addEventListener("reset", () => {
+            editandoId = null
+            formTitle.textContent = "Detalles del producto"
+            submitBtn.textContent = "Guardar Productos"
+        })
+
+
+        tableBody.addEventListener("click", async (e) => {
+            // Verificar si se hizo clic en el botón de eliminar
+            if (e.target.closest("btn-eliminar")) {
+                const id = e.target.closest("btn-eliminar").dataset.id
+                const confirmacion = await alertaConfirmacion("¿Estás seguro de que quieres eliminar este producto?")
+                if (confirmacion) {
+                    await eliminarProducto(id)
+                    traerProductos()
+                    alertaExitosa("Producto eliminado exitosamente")
+                }
+            }
+        })
+
+        // GET
+        async function traerProductos() {
+            try {
+                const producto = await obtenerProductos()
+                imprimirProductos(producto)
+                actualizarEstadisticas(producto)
+            } catch (error) {
+                console.error("Error al traer datos:", error)
+                alert("Hubo un error al cargar los productos. Por favor, intenta nuevamente.")
+            }
+
         }
-    }
-    
-    console.log(nuevoProducto)
- 
-    // Agregar el nuevo producto a la base de datos a través de la función agregarProductoAPI
-    await agregarProductoAPI(nuevoProducto)
-    alertaExitosa("Producto agregado exitosamente") // Mostrar una alerta de éxito al usuario después de agregar el producto
-        
+
+        // POST
+        async function agregarProductoAPI(producto) {
+            try {
+                await crearProducto(producto)
+                traerProductos() // Traer la lista actualizada de productos después de agregar el nuevo producto
+                alertaExitosa("Producto agregado exitosamente") // Mostrar una alerta de éxito al usuario después de agregar el producto
+                formulario.reset() // Limpiar el formulario después de agregar el producto
+            } catch (error) {
+                console.error("Error al agregar producto:", error)
+                alert("Hubo un error al guardar el producto. Por favor, intenta nuevamente.")
+            }
+        }
+
+        // PUT
+        async function guardarCambiosProducto(id, producto) {
+            try {
+                await actualizarProducto(id, producto)
+                traerProductos() // Traer la lista actualizada de productos después de actualizar el producto
+                alertaExitosa("Producto actualizado exitosamente") // Mostrar una alerta de éxito al usuario después de actualizar el producto
+                formulario.reset() // Limpiar el formulario después de actualizar el producto
+            } catch (error) {
+                console.error("Error al actualizar producto:", error)
+                alert("Hubo un error al guardar el producto. Por favor, intenta nuevamente.")
+            }
+        }
+
+        // DELETE
+        async function eliminarProductoAPI(id) {
+            try {
+                await eliminarProducto(id)
+                traerProductos() // Traer la lista actualizada de productos después de eliminar el producto
+                alertaExitosa("Producto eliminado exitosamente") // Mostrar una alerta de éxito al usuario después de eliminar el producto
+            } catch (error) {
+                console.error("Error al eliminar producto:", error)
+                alert("Hubo un error al eliminar el producto. Por favor, intenta nuevamente.")
+            }
+        }
+
+        console.log(nuevoProducto)
+
+        // Agregar el nuevo producto a la base de datos a través de la función agregarProductoAPI
+        await agregarProductoAPI(nuevoProducto)
+        alertaExitosa("Producto agregado exitosamente") // Mostrar una alerta de éxito al usuario después de agregar el producto
+
         const productosActualizados = await traerProductos() // Traer la lista actualizada de productos después de agregar el nuevo producto
         imprimirProductos(productosActualizados) // Imprimir la lista actualizada de productos en la tabla
         event.target.reset() // Limpiar el formulario después de agregar el producto
 
-        } catch (error) { // En caso de error, mostrar una alerta al usuario
-        alert("Error: No se pudo guardar el producto")
+    } catch (error) { // En caso de error, mostrar una alerta al usuario
+        alert("Hubo un error al guardar el producto. Por favor, intenta nuevamente.")
         console.error(error)
     }
 })
 
 // Función para imprimir los productos en la tabla
-function imprimirProductos(listaDeLosProductos) { 
+function imprimirProductos(listaDeLosProductos) {
     const tbody = document.querySelector("#inventory-list")
     tbody.innerHTML = ""
     for (const producto of listaDeLosProductos) { // Iterar sobre la lista de productos y agregar una fila por cada producto
