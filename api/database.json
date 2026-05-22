@@ -97,6 +97,13 @@
       "unidad": 33,
       "descripcion": "srsf",
       "id": "dnZEG7BCG_M"
+    },
+    {
+      "nombre": "altavoz bluetooth portátil zealot",
+      "precio": 25,
+      "unidad": 2,
+      "descripcion": "ffy",
+      "id": "zrI1I5VPg9s"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

@@ -34,9 +34,54 @@ formulario.addEventListener("submit", async (event) => { // Al enviar el formula
         unidad: Number(unidadProducto.value),
         descripcion: descripcionProducto.value.toLowerCase().trim() ? descripcionProducto.value.toLowerCase().trim() : "Sin descripcion"
     }
+
+    if (editandoId) {
+        guardarCambiosProducto(editandoId, nuevoProducto)
+    } else {
+        agregarProductoAPI(nuevoProducto)
+    }
+
+    formulario.addEventListener("reset", () => {
+        editandoId = null
+        formTitle.textContent = "Detalles del producto"
+        submitBtn.textContent = "Guardar Productos"
+    })
+    
+    tableBody.addEventListener("click", async (e) => {
+
+        if (e.target.closest("btn-eliminar")) {
+            const id = e.target.closest("btn-eliminar").database.json
+        }
+    })
+
+    // GET
+    async function traerProductos() {
+        try {
+            const producto = await obtenerProductos()
+            imprimirProductos(producto)
+            actualizarEstadisticas(producto)
+        } catch (error) {
+            console.error("Error al traer datos:", error)
+            alert("Error: No se pudieron cargar los productos")
+        }
+        
+    }
+
+    // POST
+    async function agregarProductoAPI(producto) {
+        try {
+            await crearProducto(producto)
+            traerProductos() // Traer la lista actualizada de productos después de agregar el nuevo producto
+            alertaExitosa("Producto agregado exitosamente") // Mostrar una alerta de éxito al usuario después de agregar el producto
+            formulario.reset() // Limpiar el formulario después de agregar el producto
+        } catch (error) {
+            console.error("Error al agregar producto:", error)
+            alert("Error: No se pudo agregar el producto")
+        }
+    }
     
     console.log(nuevoProducto)
-
+ 
     // Agregar el nuevo producto a la base de datos a través de la función agregarProductoAPI
     await agregarProductoAPI(nuevoProducto)
     alertaExitosa("Producto agregado exitosamente") // Mostrar una alerta de éxito al usuario después de agregar el producto
