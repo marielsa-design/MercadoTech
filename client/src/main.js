@@ -3,18 +3,26 @@ import { traerProductos, agregarProducto as agregarProductoAPI } from './service
 import { Alert } from 'bootstrap';
 import { alertaExitosa } from './utils/alert.js';
 
-
 document.addEventListener("DOMContentLoaded", async () => {
     const datos = await traerProductos();
     imprimirProductos(datos);
 })
 
 // Obtener referencias a los elementos del formulario
-const formulario = document.getElementById("product-form");
-const nombreProducto = document.getElementById("nombre");
-const precioProducto = document.getElementById("precio");
-const unidadProducto = document.getElementById("unidad");
-const descripcionProducto = document.getElementById("descripcion");
+const formulario = document.getElementById("product-form")
+const formTitle = document.getElementById("form-title")
+const submitBtn = formulario.querySelector("button[type='submit']")
+
+// Obtener referencias a los campos del formulario
+const nombreProducto = document.getElementById("nombre")
+const precioProducto = document.getElementById("precio")
+const unidadProducto = document.getElementById("unidad")
+const descripcionProducto = document.getElementById("descripcion")
+
+// Obtener referencia al cuerpo de la tabla donde se mostrarán los productos
+const tableBody = document.getElementById("inventory-list")
+
+let editandoId = null // Variable para almacenar el ID del producto que se está editando (si es el caso)
 
 formulario.addEventListener("submit", async (event) => { // Al enviar el formulario, prevenir la acción por defecto (recargar la página)
     event.preventDefault()

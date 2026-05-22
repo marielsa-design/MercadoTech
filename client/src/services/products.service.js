@@ -1,4 +1,4 @@
-const endpoint = "http://localhost:3005/productos"
+const endpoint = "http://localhost:3000/productos"
 
 export async function traerProductos() {
 
@@ -6,14 +6,15 @@ export async function traerProductos() {
         const response = await fetch(endpoint)
         if (!response.ok) {
             alert("Error: Sistema fuera de servicio")
-            return []
+            return 
         }
-        return await response.json()
+        const data = await response.json()
+        return data
 
     } catch (error) {
         alert("Error: No se pudieron cargar los productos")
         console.error(error)
-        return []
+        return 
     }
 }
 
