@@ -1,6 +1,6 @@
-# StockMaster - Gestión de Inventario 🚀
+# MercadoTech - Gestión de Inventario 🚀
 
-Bienvenido al proyecto **StockMaster**, una aplicación premium para la gestión de inventarios. Este proyecto está diseñado para practicar el desarrollo de una interfaz CRUD completa consumiendo una API REST.
+Bienvenido al proyecto **MercadoTech**, una aplicación premium para la gestión de inventarios. Este proyecto está diseñado para practicar el desarrollo de una interfaz CRUD completa consumiendo una API REST.
 
 ## 📂 Estructura del Proyecto
 
