@@ -1,0 +1,103 @@
+{
+  "productos": [
+    {
+      "id": "1",
+      "nombre": "Laptop HP Pavilion",
+      "precio": 25000,
+      "unidad": 10,
+      "descripcion": "Una laptop potente para todas tus necesidades de trabajo y entretenimiento."
+    },
+    {
+      "id": "2",
+      "nombre": "Monitor Samsung Curvo",
+      "precio": 20000,
+      "unidad": 10,
+      "descripcion": "Un monitor curvo de alta calidad para una experiencia de visualización inmersiva."
+    },
+    {
+      "id": "3",
+      "nombre": "Tablet Samsung Galaxy",
+      "precio": 15000,
+      "unidad": 15,
+      "descripcion": "Una tablet potente para todas tus necesidades de trabajo y entretenimiento."
+    },
+    {
+      "id": "4",
+      "nombre": "Teclado Mecánico Logitech",
+      "precio": 25000,
+      "unidad": 10,
+      "descripcion": "Un teclado mecánico de alta calidad para una experiencia de escritura superior."
+    },
+    {
+      "id": "5",
+      "nombre": "Audifonos Sony WH-1000XM4",
+      "precio": 20000,
+      "unidad": 10,
+      "descripcion": "Un audífonos inalámbricos de alta calidad para una experiencia de audio superior."
+    },
+    {
+      "id": "6",
+      "nombre": "Ipad Pro 12.9",
+      "precio": 15000,
+      "unidad": 15,
+      "descripcion": "Una Ipad Pro 12.9 de alta calidad para una experiencia de uso superior."
+    },
+    {
+      "nombre": "bluetooth speaker zealot 120w wireless",
+      "precio": 35000,
+      "unidad": 5,
+      "descripcion": "potente experiencia de sonido: el altavoz exterior zealot es un altavoz bluetooth de 120 w con graves, equipado con dos altavoces de graves de 50 w y dos tweeters de 10 w, que proporciona una calidad de sonido impresionante y es adecuado para varios tipos de música.",
+      "id": "XPULzCylzqc"
+    },
+    {
+      "nombre": "escritorio pc gamer negro y azul madesa",
+      "precio": 150000,
+      "unidad": 3,
+      "descripcion": "mejore su experiencia de juego invirtiendo en la configuración ideal con el escritorio gamer 9424 de madesa.",
+      "id": "CnqUweyDLJA"
+    },
+    {
+      "nombre": "iphone xs",
+      "precio": 155000,
+      "unidad": 12,
+      "descripcion": "nuevo iphone barato",
+      "id": "XeMlU1TS0-8"
+    },
+    {
+      "nombre": "monitor pequeño",
+      "precio": 50000,
+      "unidad": 9,
+      "descripcion": "monitor barato",
+      "id": "NTHsuMdkdyU"
+    },
+    {
+      "nombre": "goma",
+      "precio": 500,
+      "unidad": 45,
+      "descripcion": "gomas plastica",
+      "id": "AWij1KXJh0Y"
+    },
+    {
+      "nombre": "ddd",
+      "precio": 5444,
+      "unidad": 2,
+      "descripcion": "Sin descripcion",
+      "id": "YIvw5DvVOeY"
+    },
+    {
+      "nombre": "monitor",
+      "precio": 4555,
+      "unidad": 2,
+      "descripcion": "barato",
+      "id": "ShrMtagxxvo"
+    },
+    {
+      "nombre": "fgdgd",
+      "precio": 444,
+      "unidad": 33,
+      "descripcion": "srsf",
+      "id": "dnZEG7BCG_M"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
