@@ -1,43 +1,170 @@
 # MercadoTech - Gestión de Inventario 🚀
 
-Bienvenido al proyecto **MercadoTech**, una aplicación premium para la gestión de inventarios. Este proyecto está diseñado para practicar el desarrollo de una interfaz CRUD completa consumiendo una API REST.
+Aplicación web para gestionar productos tecnológicos utilizando JavaScript Vanilla, Vite, Tailwind CSS y JSON Server.
+
+---
+
+## 📌 Características
+
+✅ Listar productos  
+✅ Agregar productos  
+✅ Editar productos  
+✅ Eliminar productos  
+✅ Estadísticas dinámicas  
+✅ Consumo de API REST  
+
+---
+
+## 🛠️ Tecnologías
+
+- HTML5
+- JavaScript ES6+
+- Tailwind CSS
+- Vite
+- JSON Server
+
+---
 
 ## 📂 Estructura del Proyecto
 
-El proyecto está dividido en dos partes principales:
-
-- **`/client`**: Contiene la interfaz de usuario construida con **Vite** y **Tailwind CSS**. Ya tienes toda la estructura HTML y los estilos listos para usar.
-- **`/api`**: Aquí es donde debes configurar tu servidor de datos utilizando **json-server**.
-
-## 🛠️ Tecnologías Utilizadas
-
-- **Frontend:** HTML5, JavaScript (ES6+), Tailwind CSS.
-- **Herramientas de Construcción:** Vite.
-- **Backend (Simulado):** JSON Server.
-
-## 📋 Tareas a Realizar
-
-Tu misión es conectar la interfaz visual con la lógica del backend:
-
-1.  **Configurar la API:**
-    - Inicializa un servidor con `json-server` en la carpeta `/api`.
-    - Crea un archivo `db.json` con la estructura necesaria para los productos (nombre, precio, stock, descripción).
-2.  **Lógica del Cliente (`/client/src/main.js`):**
-    - Implementar el **Listado** (GET) de productos al cargar la página.
-    - Implementar la **Creación** (POST) de nuevos productos desde el formulario.
-    - Implementar la **Edición** (PUT/PATCH) de productos existentes.
-    - Implementar la **Eliminación** (DELETE) de productos.
-    - Actualizar las estadísticas superiores dinámicamente.
-
-## 🚀 Cómo empezar
-
-1.  Instala las dependencias en la carpeta del cliente:
-    ```bash
-    cd client
-    npm install
-    npm run dev
-    ```
-2.  Configura e inicia tu servidor en la carpeta `api`.
+```bash
+MERCADOTECH/
+│
+├── api/
+│   ├── database.json
+│   ├── package.json
+│   └── node_modules/
+│
+├── client/
+│   ├── src/
+│   │   ├── services/
+│   │   │   └── products.service.js
+│   │   │
+│   │   ├── styles/
+│   │   │   └── globals.css
+│   │   │
+│   │   ├── utils/
+│   │   │   └── alert.js
+│   │   │
+│   │   ├── ui/
+│   │   │   ├── estadisticas.js
+│   │   │   └── renderProductos.js
+│   │   │
+│   │   └── main.js
+│   │
+│   ├── index.html
+│   ├── login.html
+│   ├── vite.config.ts
+│   └── package.json
+│
+└── README.md
+```
 
 ---
-¡Mucha suerte con el desarrollo! Que el código te acompañe. 💻✨
+
+## ⚙️ Instalación
+
+### 1️⃣ Clonar repositorio
+
+```bash
+git clone https://github.com/tu-usuario/mercadotech.git
+```
+
+---
+
+### 2️⃣ Instalar dependencias Frontend
+
+```bash
+cd client
+npm install
+```
+
+---
+
+### 3️⃣ Ejecutar Vite
+
+```bash
+npm run dev
+```
+
+---
+
+## ⚡ Configurar JSON Server
+
+Entrar a la carpeta API:
+
+```bash
+cd ../api
+```
+
+Instalar json-server:
+
+```bash
+npm install json-server
+```
+
+---
+
+## 🗂️ Ejemplo database.json
+
+```json
+{
+  "productos": [
+    {
+      "id": 1,
+      "nombre": "Laptop Lenovo",
+      "precio": 3500,
+      "stock": 8,
+      "descripcion": "Laptop para desarrollo"
+    }
+  ]
+}
+```
+
+---
+
+## ▶️ Ejecutar API
+
+```bash
+npx json-server --watch database.json --port 3000
+```
+
+Servidor:
+
+```bash
+http://localhost:3000/productos
+```
+
+---
+
+## 📚 Funcionalidades CRUD
+
+### 📋 Obtener productos
+
+```js
+GET /productos
+```
+
+### ➕ Crear producto
+
+```js
+POST /productos
+```
+
+### ✏️ Editar producto
+
+```js
+PUT /productos/:id
+```
+
+### ❌ Eliminar producto
+
+```js
+DELETE /productos/:id
+```
+
+---
+
+## 👩‍💻 Autor
+
+Desarrollado por Marielsa Parra 💙
