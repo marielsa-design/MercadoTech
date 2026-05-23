@@ -1,11 +1,11 @@
 {
   "productos": [
     {
-      "id": "1",
-      "nombre": "Laptop HP Pavilion",
+      "nombre": "Laptop Hp Pavilion",
       "precio": 25000,
-      "unidad": 10,
-      "descripcion": "Una laptop potente para todas tus necesidades de trabajo y entretenimiento."
+      "unidad": 35,
+      "descripcion": "Una laptop potente para todas tus necesidades de trabajo y entretenimiento.",
+      "id": "1"
     },
     {
       "id": "2",
@@ -29,11 +29,11 @@
       "descripcion": "Un teclado mecánico de alta calidad para una experiencia de escritura superior."
     },
     {
-      "id": "5",
-      "nombre": "Audifonos Sony WH-1000XM4",
+      "nombre": "Audifonos Sony Wh-1000xm4",
       "precio": 20000,
-      "unidad": 10,
-      "descripcion": "Un audífonos inalámbricos de alta calidad para una experiencia de audio superior."
+      "unidad": 1,
+      "descripcion": "Un audífonos inalámbricos de alta calidad para una experiencia de audio superior.",
+      "id": "5"
     },
     {
       "id": "6",
@@ -43,67 +43,32 @@
       "descripcion": "Una Ipad Pro 12.9 de alta calidad para una experiencia de uso superior."
     },
     {
-      "nombre": "bluetooth speaker zealot 120w wireless",
+      "nombre": "Bluetooth Speaker Zealot 120w Wireless",
       "precio": 35000,
       "unidad": 5,
-      "descripcion": "potente experiencia de sonido: el altavoz exterior zealot es un altavoz bluetooth de 120 w con graves, equipado con dos altavoces de graves de 50 w y dos tweeters de 10 w, que proporciona una calidad de sonido impresionante y es adecuado para varios tipos de música.",
+      "descripcion": "Un altavoz bluetooth de 120 w con graves, equipado con dos altavoces de graves de 50 w y dos tweeters de 10 w, que proporciona una calidad de sonido increible y es adecuado para varios tipos de música.",
       "id": "XPULzCylzqc"
     },
     {
-      "nombre": "escritorio pc gamer negro y azul madesa",
-      "precio": 150000,
-      "unidad": 3,
-      "descripcion": "mejore su experiencia de juego invirtiendo en la configuración ideal con el escritorio gamer 9424 de madesa.",
-      "id": "CnqUweyDLJA"
+      "nombre": "Laptop Ace",
+      "precio": 15000,
+      "unidad": 2,
+      "descripcion": "Una laptop inteligente barato para todas tus necesidades de trabajo y entretenimiento.",
+      "id": "RM6AJRPIedM"
     },
     {
-      "nombre": "iphone xs",
-      "precio": 155000,
-      "unidad": 12,
-      "descripcion": "nuevo iphone barato",
-      "id": "XeMlU1TS0-8"
-    },
-    {
-      "nombre": "monitor pequeño",
+      "nombre": "Celular Samsung Pro",
       "precio": 50000,
-      "unidad": 9,
-      "descripcion": "monitor barato",
-      "id": "NTHsuMdkdyU"
+      "unidad": 26,
+      "descripcion": "Un celular contiene un dual sim, que es compatible con la mayoría de las tarjetas sim en colombia, tales como telcel, movistar, at&t, altan y otros.",
+      "id": "e2PZGhVDNlQ"
     },
     {
-      "nombre": "goma",
-      "precio": 500,
-      "unidad": 45,
-      "descripcion": "gomas plastica",
-      "id": "AWij1KXJh0Y"
-    },
-    {
-      "nombre": "ddd",
-      "precio": 5444,
-      "unidad": 2,
-      "descripcion": "Sin descripcion",
-      "id": "YIvw5DvVOeY"
-    },
-    {
-      "nombre": "monitor",
-      "precio": 4555,
-      "unidad": 2,
-      "descripcion": "barato",
-      "id": "ShrMtagxxvo"
-    },
-    {
-      "nombre": "fgdgd",
-      "precio": 444,
-      "unidad": 33,
-      "descripcion": "srsf",
-      "id": "dnZEG7BCG_M"
-    },
-    {
-      "nombre": "altavoz bluetooth portátil zealot",
-      "precio": 25,
-      "unidad": 2,
-      "descripcion": "ffy",
-      "id": "zrI1I5VPg9s"
+      "nombre": "Apple Ipad Air 11",
+      "precio": 54,
+      "unidad": 35,
+      "descripcion": "Este producto combina la potencia y la capacidad de una computadora con la versatilidad y facilidad de uso que solo un ipad puede brindar. realizar varias tareas a la vez, como editar documentos mientras buscás información en internet o sacarte una selfie, es sumamente sencillo.",
+      "id": "yPJHmY7TTzM"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

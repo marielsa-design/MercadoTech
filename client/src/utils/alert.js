@@ -19,7 +19,7 @@ export function alertaExitosa(mensaje) {
 }
 
 // Función para mostrar una alerta de error al usuario
-export function alertaError(mensaje) {
+export function alertError(mensaje) {
     Swal.mixin({
         toast: true,
         position: "top-end",
@@ -37,7 +37,7 @@ export function alertaError(mensaje) {
 }
 
 // Función para mostrar una alerta de confirmación antes de eliminar un producto
-export function alertaConfirmacion(titulo = "¿Estás seguro?", texto = "No podrás revertir esta acción") {
+export async function alertaConfirmacion(titulo = "¿Estás seguro?", texto = "No podrás revertir esta acción") {
     const result = await Swal.fire({
         title: titulo,
         text: texto,
@@ -48,7 +48,5 @@ export function alertaConfirmacion(titulo = "¿Estás seguro?", texto = "No podr
         confirmButtonText: "Sí, eliminar",
         cancelButtonText: "Cancelar"
     });
-        return result.isConfirmed; // Devuelve true si el usuario confirmó, false si canceló
-}; 
-
-
+    return result.isConfirmed;
+}

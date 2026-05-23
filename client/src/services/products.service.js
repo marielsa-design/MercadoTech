@@ -5,11 +5,10 @@ export async function obtenerProductos() {
 
     try {
         const response = await fetch(endpoint)
-        if (response.ok == false) {
-            throw new Error("No se pudieron cargar los productos")
-        } else {
-            return await response.json()
-        }
+
+        if (!response.ok) throw new Error("No se pudieron cargar los productos")
+        return await response.json()
+
     } catch (error) {
         console.error("Error al obtener productos:", error)
         throw error
@@ -21,11 +20,10 @@ export async function obtenerProductoId(id) {
 
     try {
         const response = await fetch(`${endpoint}/${id}`)
-        if (response.ok == false) {
-            throw new Error("Error: al obtener el producto")
-        } else {
-            return await response.json()
-        }
+
+        if (!response.ok) throw new Error("Error al obtener el producto")
+        return await response.json()
+
     } catch (error) {
         console.error("Error al obtener el producto:", error)
         throw error
@@ -56,28 +54,37 @@ export async function crearProducto(producto) {
 }
 
 // Función para actualizar un producto existente
-export async function actualizarProducto(id, producto) { 
+export async function actualizarProducto(id, producto) {
 
+    try {
+        const response = await fetch(`${endpoint}/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(producto)
+        })
+
+        if (!response.ok) throw new Error("Error al actualizar el producto")
+        return await response.json()
+
+    } catch (error) {
+        console.error("Error al actualizar el producto:", error)
+        throw error
+    }
 }
 
 // Función para actualizar parcialmente un producto existente
 export async function actualizarParcialProducto(id, cambios) { 
-    
+
     try {
         const response = await fetch(`${endpoint}/${id}`, {
             method: "PATCH",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({nombre: "nuevo nombre"})
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(cambios)
         })
 
-        if (response.ok == false) {
-            throw new Error("Error al actualizar parcialmente el producto")
-        } else {
+        if (!response.ok) throw new Error("Error al actualizar parcialmente el producto")
         return await response.json()
-        }
-
+    
     } catch (error) {
         console.error(error)
         throw error

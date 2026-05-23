@@ -1,13 +1,28 @@
 import './styles/globals.css';
-import { obtenerProducto, obtenerProductoId, crearProducto, actualizarProducto, actualizarParcialProducto, eliminarProducto } from './services/products.service.js';
+import { obtenerProductos, obtenerProductoId, crearProducto, actualizarProducto, eliminarProducto } from './services/products.service.js';
 import { alertaExitosa, alertaConfirmacion, alertError } from './utils/alert.js';
-import { actualizarEstadisticas } from './utils/estadisticas.js';
-import { imprimirProductos } from './utils/imprimirProductos.js';
-
+import { actualizarEstadisticas } from '../ui/estadisticas.js';
+import { imprimirProductos } from '../ui/renderProductos.js';
 
 document.addEventListener("DOMContentLoaded", async () => {
-    const datos = await traerProductos();
-    imprimirProductos(datos);
+
+    const usuarioActivo = JSON.parse(localStorage.getItem("usuarioActivo"))
+    if (!usuarioActivo) {
+        window.location.href = "/login.html"
+        return
+    }
+    document.getElementById("nombre-usuario").textContent = usuarioActivo.nombre
+
+    await traerProductos()
+})
+
+window.cerrarSesion = function() {
+    localStorage.removeItem("usuarioActivo")
+    window.location.href = "/login.html"
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+    await traerProductos();
 })
 
 // Obtener referencias a los elementos del formulario
@@ -26,141 +41,210 @@ const tableBody = document.getElementById("inventory-list")
 
 let editandoId = null // Variable para almacenar el ID del producto que se está editando (si es el caso)
 
-formulario.addEventListener("submit", async (event) => { // Al enviar el formulario, prevenir la acción por defecto (recargar la página)
+// Agregar un event listener para el evento "submit" del formulario, que se dispara cuando se envía el formulario
+formulario.addEventListener("submit", async (event) => {
     event.preventDefault()
 
     try {
-        const nuevoProducto = { // Crear un nuevo producto con los datos del formulario
-            nombre: nombreProducto.value.toLowerCase().trim(),
+        const nuevoProducto = {
+            nombre: nombreProducto.value.trim().toLowerCase().split(" ").map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1)).join(" "),
             precio: Number(precioProducto.value),
             unidad: Number(unidadProducto.value),
-            descripcion: descripcionProducto.value.toLowerCase().trim() ? descripcionProducto.value.toLowerCase().trim() : "Sin descripcion"
+            descripcion: descripcionProducto.value.trim() ? descripcionProducto.value.trim().charAt(0).toUpperCase() + descripcionProducto.value.trim().slice(1).toLowerCase() : "Sin descripcion"
         }
 
-        if (editandoId) { 
-            guardarCambiosProducto(editandoId, nuevoProducto)
+        if (editandoId) {
+            await guardarCambiosProducto(editandoId, nuevoProducto)
         } else {
-            agregarProductoAPI(nuevoProducto)
+            await agregarProductoAPI(nuevoProducto)
         }
 
-        formulario.addEventListener("reset", () => {
-            editandoId = null
-            formTitle.textContent = "Detalles del producto"
-            submitBtn.textContent = "Guardar Productos"
-        })
+    } catch (error) {
+        alertError("Error al guardar el producto. Por favor, intenta de nuevo.")
+        console.error("Error al guardar el producto:", error)
+    }
+})
+// Agregar un event listener para el evento "reset" del formulario, que se dispara cuando se hace clic en el botón de reset o se llama al método reset() del formulario
+formulario.addEventListener("reset", () => {
+    editandoId = null
+    formTitle.textContent = "Detalles del producto"
+    submitBtn.textContent = "Guardar Productos"
+})
 
+// Agregar un event listener para el evento "click" en el cuerpo de la tabla
+tableBody.addEventListener("click", async (e) => {
+    // Si el clic fue en un botón de editar, se obtiene el ID del producto a editar
+    if (e.target.closest(".btn-editar")) {
+        const id = e.target.closest(".btn-editar").dataset.id
+        await prepararEdicion(id)
+    }
+    // Si el clic fue en un botón de eliminar, se obtiene el ID del producto a eliminar
+    if (e.target.closest(".btn-eliminar")) {
+        const id = e.target.closest(".btn-eliminar").dataset.id
+        const confirmacion = await alertaConfirmacion("¿Estás seguro de que quieres eliminar este producto?")
 
-        tableBody.addEventListener("click", async (e) => {
-            // Verificar si se hizo clic en el botón de eliminar
-            if (e.target.closest("btn-eliminar")) {
-                const id = e.target.closest("btn-eliminar").dataset.id
-                const confirmacion = await alertaConfirmacion("¿Estás seguro de que quieres eliminar este producto?")
-                if (confirmacion) {
-                    await eliminarProducto(id)
-                    traerProductos()
-                    alertaExitosa("Producto eliminado exitosamente")
-                }
-            }
-        })
-
-        // GET
-        async function traerProductos() {
-            try {
-                const producto = await obtenerProductos()
-                imprimirProductos(producto)
-                actualizarEstadisticas(producto)
-            } catch (error) {
-                console.error("Error al traer datos:", error)
-                alert("Hubo un error al cargar los productos. Por favor, intenta nuevamente.")
-            }
-
+        if (confirmacion) { // Si el usuario confirma la eliminación, se llama a la función para eliminar el producto
+            await eliminarProducto(id)
+            await traerProductos()
+            alertaExitosa("Producto eliminado exitosamente")
         }
+    }
 
-        // POST
-        async function agregarProductoAPI(producto) {
-            try {
-                await crearProducto(producto)
-                traerProductos() // Traer la lista actualizada de productos después de agregar el nuevo producto
-                alertaExitosa("Producto agregado exitosamente") // Mostrar una alerta de éxito al usuario después de agregar el producto
-                formulario.reset() // Limpiar el formulario después de agregar el producto
-            } catch (error) {
-                console.error("Error al agregar producto:", error)
-                alert("Hubo un error al guardar el producto. Por favor, intenta nuevamente.")
-            }
-        }
-
-        // PUT
-        async function guardarCambiosProducto(id, producto) {
-            try {
-                await actualizarProducto(id, producto)
-                traerProductos() // Traer la lista actualizada de productos después de actualizar el producto
-                alertaExitosa("Producto actualizado exitosamente") // Mostrar una alerta de éxito al usuario después de actualizar el producto
-                formulario.reset() // Limpiar el formulario después de actualizar el producto
-            } catch (error) {
-                console.error("Error al actualizar producto:", error)
-                alert("Hubo un error al guardar el producto. Por favor, intenta nuevamente.")
-            }
-        }
-
-        // DELETE
-        async function eliminarProductoAPI(id) {
-            try {
-                await eliminarProducto(id)
-                traerProductos() // Traer la lista actualizada de productos después de eliminar el producto
-                alertaExitosa("Producto eliminado exitosamente") // Mostrar una alerta de éxito al usuario después de eliminar el producto
-            } catch (error) {
-                console.error("Error al eliminar producto:", error)
-                alert("Hubo un error al eliminar el producto. Por favor, intenta nuevamente.")
-            }
-        }
-
-        console.log(nuevoProducto)
-
-        // Agregar el nuevo producto a la base de datos a través de la función agregarProductoAPI
-        await agregarProductoAPI(nuevoProducto)
-        alertaExitosa("Producto agregado exitosamente") // Mostrar una alerta de éxito al usuario después de agregar el producto
-
-        const productosActualizados = await traerProductos() // Traer la lista actualizada de productos después de agregar el nuevo producto
-        imprimirProductos(productosActualizados) // Imprimir la lista actualizada de productos en la tabla
-        event.target.reset() // Limpiar el formulario después de agregar el producto
-
-    } catch (error) { // En caso de error, mostrar una alerta al usuario
-        alert("Hubo un error al guardar el producto. Por favor, intenta nuevamente.")
-        console.error(error)
+    // Si el clic fue en un botón de editar, se obtiene el ID del producto a editar
+    if (e.target.closest(".btn-editar")) {
+        const id = e.target.closest(".btn-editar").dataset.id
+        await prepararEdicion(id)
     }
 })
 
-// Función para imprimir los productos en la tabla
-function imprimirProductos(listaDeLosProductos) {
-    const tbody = document.querySelector("#inventory-list")
-    tbody.innerHTML = ""
-    for (const producto of listaDeLosProductos) { // Iterar sobre la lista de productos y agregar una fila por cada producto
-        tbody.innerHTML += `
-        <tr class="hover:bg-slate-50/30 transition-colors group">
-        <td class="px-8 py-6">
-            <div class="flex flex-col">
-            <span class="font-bold text-slate-900">${producto.nombre}</span>
-            <span class="text-xs text-slate-400 mt-1">${producto.descripcion ?? "Sin descripcion"}</span>
-            </div>
-        </td>
-        <td class="px-8 py-6 text-center">
-            <span class="px-4 py-1.5 bg-emerald-50 text-emerald-600 rounded-xl text-sm font-black border border-emerald-100">${producto.unidad} unidades</span>
-        </td>
-        <td class="px-8 py-6 text-center font-bold text-slate-900">COP ${producto.precio}</td>
-        <td class="px-8 py-6 text-right">
-            <div class="flex justify-end gap-3">
-            <button data-id="${producto.id}" class="w-10 h-10 flex items-center justify-center text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all border border-transparent hover:border-indigo-100" title="Editar">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
-            </button>
-            <button data-id="${producto.id}" class="w-10 h-10 flex items-center justify-center text-rose-600 hover:bg-rose-50 rounded-xl transition-all border border-transparent hover:border-rose-100" title="Eliminar">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-            </button>
-        </td>
-        </tr>
-        `
+// GET
+async function traerProductos() {
+
+    try { // Obtener la lista de productos desde el backend
+        const productos = await obtenerProductos()
+        todosLosProductos = productos
+        paginaActual = 1
+        mostrarPagina(productos, paginaActual)
+        actualizarEstadisticas(productos)
+
+    } catch (error) { // Manejar cualquier error que ocurra durante el proceso de traer los productos
+        console.error("Error al traer datos:", error)
+        alert("Hubo un error al cargar los productos.")
     }
 }
+
+// POST
+async function agregarProductoAPI(producto) {
+
+    try { // Agregar el nuevo producto a la base de datos
+        await crearProducto(producto)
+        await traerProductos()
+        alertaExitosa("Producto agregado exitosamente")
+        formulario.reset()
+
+    } catch (error) { // Manejar cualquier error que ocurra durante el proceso de agregar el producto
+        console.error("Error al agregar producto:", error)
+        alert("Hubo un error al guardar el producto. Por favor, intenta nuevamente.")
+    }
+}
+
+// PUT
+async function guardarCambiosProducto(id, producto) {
+    // Mostrar una alerta de carga mientras se actualiza el producto
+    try {
+        await actualizarProducto(id, producto)
+        await traerProductos()
+        alertaExitosa("Producto actualizado exitosamente")
+        formulario.reset()
+
+    } catch (error) { // Manejar cualquier error que ocurra durante el proceso de actualizar el producto
+        console.error("Error al actualizar producto:", error)
+        alert("Hubo un error al guardar el producto. Por favor, intenta nuevamente.")
+    }
+}
+
+
+// DELETE
+async function eliminarProductoAPI(id) {
+
+    try { // Mostrar una alerta de carga mientras se elimina el producto
+        await eliminarProducto(id)
+        await traerProductos()
+        alertaExitosa("Producto eliminado exitosamente")
+
+    } catch (error) { // Manejar cualquier error que ocurra durante el proceso de eliminar el producto
+        console.error("Error al eliminar producto:", error)
+        alert("Hubo un error al eliminar el producto. Por favor, intenta nuevamente.")
+    }
+}
+
+// EDIT
+async function prepararEdicion(id) {
+
+    try { // Obtener los datos del producto a editar y llenar el formulario con esos datos
+        const producto = await obtenerProductoId(id)
+
+        nombreProducto.value = producto.nombre
+        precioProducto.value = producto.precio
+        unidadProducto.value = producto.unidad
+        descripcionProducto.value = producto.descripcion
+
+        editandoId = id
+        formTitle.textContent = "Editar producto"
+        submitBtn.textContent = "Actualizar producto"
+
+    } catch (error) { // Manejar cualquier error que ocurra durante el proceso de preparar la edición del producto
+        console.error("Error al preparar edición:", error)
+        alertError("Hubo un error al cargar los datos del producto. Por favor, intenta nuevamente.")
+    }
+}
+
+
+// PAGINACIÓN
+const productosPorPagina = 6
+let paginaActual = 1
+let todosLosProductos = []
+
+// Función para mostrar una página específica de productos en la tabla
+function mostrarPagina(productos, pagina) {
+    const inicio = (pagina - 1) * productosPorPagina
+    const fin = inicio + productosPorPagina
+    const productosPagina = productos.slice(inicio, fin)
+    imprimirProductos(productosPagina)
+
+    const total = productos.length
+    const desde = inicio + 1
+    const hasta = Math.min(fin, total)
+
+    const spanPaginacion = document.getElementById("paginacion-texto")
+    if (spanPaginacion) spanPaginacion.textContent = `Mostrando ${desde} al ${hasta} de ${total} productos`
+
+    const btnPrev = document.getElementById("btn-prev")
+    const btnNext = document.getElementById("btn-next")
+
+    // Habilitar o deshabilitar los botones de paginación según la página actual y el total de productos
+    if (pagina === 1) {
+        btnPrev.classList.add("opacity-40", "cursor-not-allowed")
+        btnPrev.disabled = true
+    } else {
+        btnPrev.classList.remove("opacity-40", "cursor-not-allowed")
+        btnPrev.disabled = false
+    }
+    // Si el fin de la página actual es mayor o igual al total de productos, se deshabilita el botón de siguiente
+    if (fin >= total) {
+        btnNext.classList.add("opacity-40", "cursor-not-allowed")
+        btnNext.disabled = true
+    } else {
+        btnNext.classList.remove("opacity-40", "cursor-not-allowed")
+        btnNext.disabled = false
+    }
+    // Agregar event listeners a los botones de paginación para cambiar de página al hacer clic
+    document.getElementById("btn-prev").addEventListener("click", () => {
+        if (paginaActual > 1) {
+            paginaActual--
+            mostrarPagina(todosLosProductos, paginaActual)
+        }
+    })
+    // Si el fin de la página actual es mayor o igual al total de productos, se deshabilita el botón de siguiente
+    document.getElementById("btn-next").addEventListener("click", () => {
+        if (paginaActual * productosPorPagina < todosLosProductos.length) {
+            paginaActual++
+            mostrarPagina(todosLosProductos, paginaActual)
+        }
+    })
+}
+
+// BÚSQUEDA
+const inputBusqueda = document.querySelector("input[placeholder='Buscar en el catálogo...']")
+
+// Agregar un event listener para el evento "input" del campo de búsqueda, que se dispara cada vez que el usuario escribe algo en el campo
+inputBusqueda.addEventListener("input", () => {
+    const termino = inputBusqueda.value.toLowerCase().trim()
+    
+    const productosFiltrados = todosLosProductos.filter(producto => 
+        producto.nombre.toLowerCase().includes(termino)
+    )
+// Reiniciar a la primera página cada vez que se realiza una búsqueda para mostrar los resultados desde el inicio
+    paginaActual = 1
+    mostrarPagina(productosFiltrados, paginaActual)
+})

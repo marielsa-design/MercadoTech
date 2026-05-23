@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | MercadoTech</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/src/styles/globals.css">
+</head>
+
+<body class="antialiased bg-slate-50 flex items-center justify-center min-h-screen">
+    <div class="w-full max-w-md p-8 bg-white rounded-3xl shadow-xl border border-slate-100">
+
+        <!-- Logo -->
+        <div class="flex items-center gap-3 mb-8">
+            <div
+                class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-xl font-black text-slate-900">MercadoTech</h1>
+                <p class="text-xs font-bold text-indigo-600 uppercase tracking-widest">Gestión de Inventario</p>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex mb-8 border-b border-slate-100">
+            <button id="tab-login" onclick="mostrarTab('login')"
+                class="flex-1 py-3 text-sm font-black text-indigo-600 border-b-2 border-indigo-600 uppercase tracking-widest">Iniciar
+                Sesión</button>
+            <button id="tab-signup" onclick="mostrarTab('signup')"
+                class="flex-1 py-3 text-sm font-black text-slate-400 uppercase tracking-widest">Registrarse</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="form-login">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Nombre de usuario</label>
+                    <input type="text" id="login-email" placeholder="Tu nombre de usuario"
+                        class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all bg-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Contraseña</label>
+                    <input type="password" id="login-password" placeholder="••••••••"
+                        class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all bg-white">
+                </div>
+                <button onclick="iniciarSesion()"
+                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-4 rounded-2xl shadow-lg shadow-indigo-200 transition-all uppercase tracking-wider text-sm">
+                    Iniciar Sesión
+                </button>
+                <p id="login-error" class="text-rose-500 text-sm font-bold text-center hidden">Usuario o contraseña
+                    incorrectos</p>
+            </div>
+        </div>
+
+        <!-- Sign Up Form -->
+        <div id="form-signup" class="hidden">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Nombre completo</label>
+                    <input type="text" id="signup-nombre" placeholder="Tu nombre completo"
+                        class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all bg-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Nombre de usuario</label>
+                    <input type="text" id="signup-email" placeholder="Tu nombre de usuario"
+                        class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all bg-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Contraseña</label>
+                    <input type="password" id="signup-password" placeholder="••••••••"
+                        class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all bg-white">
+                </div>
+                <button onclick="registrarse()"
+                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-4 rounded-2xl shadow-lg shadow-indigo-200 transition-all uppercase tracking-wider text-sm">
+                    Crear Cuenta
+                </button>
+                <p id="signup-error" class="text-rose-500 text-sm font-bold text-center hidden">Por favor completa todos
+                    los campos</p>
+                <p id="signup-success" class="text-emerald-500 text-sm font-bold text-center hidden">¡Cuenta creada!
+                    Inicia sesión.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.mostrarTab = function (tab) {
+            const formLogin = document.getElementById("form-login")
+            const formSignup = document.getElementById("form-signup")
+            const tabLogin = document.getElementById("tab-login")
+            const tabSignup = document.getElementById("tab-signup")
+
+            if (tab === "login") {
+                formLogin.classList.remove("hidden")
+                formSignup.classList.add("hidden")
+                tabLogin.classList.add("text-indigo-600", "border-b-2", "border-indigo-600")
+                tabLogin.classList.remove("text-slate-400")
+                tabSignup.classList.remove("text-indigo-600", "border-b-2", "border-indigo-600")
+                tabSignup.classList.add("text-slate-400")
+            } else {
+                formSignup.classList.remove("hidden")
+                formLogin.classList.add("hidden")
+                tabSignup.classList.add("text-indigo-600", "border-b-2", "border-indigo-600")
+                tabSignup.classList.remove("text-slate-400")
+                tabLogin.classList.remove("text-indigo-600", "border-b-2", "border-indigo-600")
+                tabLogin.classList.add("text-slate-400")
+            }
+        }
+
+        window.iniciarSesion = function () {
+            const usuario = document.getElementById("login-email").value.trim()
+            const password = document.getElementById("login-password").value.trim()
+
+            if (usuario === "Marielsa" && password === "1234") {
+                localStorage.setItem("usuarioActivo", JSON.stringify({ nombre: "Marielsa" }))
+                window.location.href = "/index.html"  // ✅ Esta línea faltaba
+            } else {
+                document.getElementById("login-error").classList.remove("hidden")
+            }
+        }
+
+        window.registrarse = function () {
+            const nombre = document.getElementById("signup-nombre").value.trim()
+            const usuario = document.getElementById("signup-email").value.trim()
+            const password = document.getElementById("signup-password").value.trim()
+
+            if (!nombre || !usuario || !password) {
+                document.getElementById("signup-error").classList.remove("hidden")
+                return
+            }
+
+            const usuarios = JSON.parse(localStorage.getItem("usuarios") || "[]")
+            usuarios.push({ nombre, usuario, password })
+            localStorage.setItem("usuarios", JSON.stringify(usuarios))
+
+            document.getElementById("signup-error").classList.add("hidden")
+            document.getElementById("signup-success").classList.remove("hidden")
+            setTimeout(() => mostrarTab("login"), 1500)
+        }
+    </script>
+</body>
+
+</html>
